@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const {PORT} = require('./config/server.config');
-const BaseError = require('./errors/Base.error');
-
+// const BaseError = require('./errors/Base.error');
+const connectToDB = require('./config/db.config');
 const apiRouter = require('./routes');
 const errorHandler = require('./utils/errorHandler');
 
@@ -23,9 +23,12 @@ app.get('/ping', (req,res) => {
 // last middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server started at PORT: ${PORT}`);
-    //    try {
+    await connectToDB();
+    console.log("Succesffully connected to db");
+}); 
+//    try {
     //        throw new BaseError("Not Found", 404, "Resource not found", {});   
     //       // 1. opened a db connection
     //       // 2. queried on db, but u wrong syntax query
@@ -37,7 +40,6 @@ app.listen(PORT, () => {
     //     // close the db connection
     //     console.log("executed finally")  // always happen
     //    }
-}); 
 
 // error or exception handling is imp because the thing is that if we can handle exception then program get stop
 
